@@ -1,11 +1,13 @@
 services:
   frontend:
     build:
-      context: nextjs-starter-medusa
+      context: storefront
       args:
-        - NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY=pk_test_123
-    ports:
-      - 8000:8000
+        - NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY=pk_test
+        - MEDUSA_BACKEND_URL=http://localhost:9000
+        - NODE_ENV=production
+      network: host
+    network_mode: host
     extra_hosts:
       - "host.docker.internal:host-gateway"
     deploy:

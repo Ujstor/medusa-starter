@@ -33,7 +33,7 @@ services:
       retries: 5
 
   backend-server:
-    build: medusa-starter-default
+    build: backend
     ports:
       - 9000:9000
     deploy:
@@ -68,7 +68,33 @@ services:
       start_period: 10s
       retries: 5
 
+  frontend:
+    build:
+      context: storefront
+      args:
+        - NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY=pk_a467b3fe583b0f858949e7215260aa48ba89b3bc9b4e19f2d21ddca999b2e783
+        - MEDUSA_BACKEND_URL=http://localhost:9000
+        - NODE_ENV=production
+      network: host
+    network_mode: host
+    depends_on:
+      backend-server:
+        condition: service_healthy
+    volumes:
+      - storefront-data:/data
+    environment:
+      MEDUSA_BACKEND_URL: http://localhost:9000
+      NEXT_PUBLIC_MEDUSA_BACKEND_URL: http://localhost:9000
+      NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY: pk_a467b3fe583b0f858949e7215260aa48ba89b3bc9b4e19f2d21ddca999b2e783
+      HOSTNAME: localhost
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
 volumes:
   postgres-data:
   backend-server-data:
   cache-backend-data:
+  storefront-data:

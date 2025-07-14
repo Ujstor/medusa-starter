@@ -1,6 +1,6 @@
 services:
   seed:
-    build: medusa-starter-default
+    build: backend
     command: yarn seed
     restart: "no"
     ports:
