@@ -32,7 +32,7 @@ services:
       timeout: 5s
       retries: 5
 
-  backend-server:
+  medusa-backend:
     build: backend
     ports:
       - 9000:9000
@@ -68,7 +68,7 @@ services:
       start_period: 10s
       retries: 5
 
-  frontend:
+  medusa-frontend:
     build:
       context: storefront
       args:
@@ -78,7 +78,7 @@ services:
       network: host
     network_mode: host
     depends_on:
-      backend-server:
+      medusa-backend:
         condition: service_healthy
     volumes:
       - storefront-data:/data
