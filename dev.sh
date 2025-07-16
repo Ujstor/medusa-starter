@@ -132,12 +132,24 @@ cleanup() {
     [ ! -z "$BACKEND_PID" ] && kill $BACKEND_PID 2>/dev/null || true
     [ ! -z "$FRONTEND_PID" ] && kill $FRONTEND_PID 2>/dev/null || true
     stop_databases
+
     echo "All services stopped"
     exit 0
 }
 
 # Set trap for cleanup
 trap cleanup SIGINT SIGTERM
+
+# Ask user if they want to clean volumes at the start
+echo ""
+read -p "Do you want to clean database volumes before starting? (y/N): " -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+    echo "Cleaning database volumes..."
+    docker compose -f compose.db.yaml down -v 2>/dev/null || true
+    docker volume prune -f 2>/dev/null || true
+    echo "Database volumes cleaned"
+fi
 
 # Start databases first
 start_databases
