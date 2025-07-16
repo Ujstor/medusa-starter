@@ -81,7 +81,6 @@ build_backend_services() {
         exit 1
     fi
 
-    # Tag backend image
     echo "Tagging backend image as: $BACKEND_IMAGE"
     # Get the actual built image name from docker compose
     BACKEND_BUILT_IMAGE=$(docker compose images medusa-backend -q | head -1)
@@ -199,7 +198,7 @@ run_services() {
     done
 
     echo "Backend is healthy, starting frontend..."
-    docker compose up medusa-frontend
+    docker compose up -d medusa-frontend
     if [ $? -ne 0 ]; then
         echo "Failed to start frontend"
         exit 1
